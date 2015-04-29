@@ -7,3 +7,13 @@ describe "Roachclip" do
   end
 
 end
+
+describe "Roachclip documents" do
+  it "has Joint" do
+    Asset.joint_collection_name.must_equal 'fs'
+  end
+
+  it "has roaches" do
+    Asset.roaches.size.must_equal 2
+  end
+end
