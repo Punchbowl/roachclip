@@ -7,8 +7,8 @@ module Roachclip
       self.options = options.symbolize_keys
 
       self.styles  = self.options[:styles].map do |key, opts|
-        Style.new("#{name}_#{key}", opts) unless key == default_style_name 
-      end.compact
+        Style.new(key, opts)
+      end
     end
 
     def ==(rhs)
@@ -17,6 +17,10 @@ module Roachclip
 
     def default_style_name
       options[:default_style] || :original
+    end
+
+    def joint_attachment_names
+      [ name ] + styles.select { |style| style.name != default_style_name }.map { |style| "#{name}_#{style.name}" }
     end
   end
 end

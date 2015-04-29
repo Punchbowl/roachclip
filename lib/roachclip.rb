@@ -17,4 +17,3 @@ require 'roachclip/class_methods'
 require 'roachclip/instance_methods'
 require 'roachclip/attachment'
 require 'roachclip/style'
-
