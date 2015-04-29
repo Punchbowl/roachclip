@@ -6,8 +6,8 @@ module Roachclip
 
   included do
     plugin Joint
-    class_attribute :roaches
-    self.roaches = Set.new
+    class_attribute :roachclip_attachments
+    self.roachclip_attachments = Set.new
   end
 
 end
@@ -15,3 +15,6 @@ end
 require 'roachclip/version'
 require 'roachclip/class_methods'
 require 'roachclip/instance_methods'
+require 'roachclip/attachment'
+require 'roachclip/style'
+

@@ -22,7 +22,9 @@ class Asset
   include MongoMapper::Document
   plugin Roachclip
 
-  key :title, String
-  roachclip :image
-  roachclip :preview
+  roachclip :image, styles: {
+    original: { :geometry => '256x256^', :convert_options => '-gravity center -background white -extent 256x256' },
+    large:    { :geometry => '133x133^', :convert_options => '-gravity center -background white -extent 133x133' },
+    thumb:    { :geometry => '60x60^', :convert_options => '-gravity center -background white -extent 60x60' }
+  }
 end
