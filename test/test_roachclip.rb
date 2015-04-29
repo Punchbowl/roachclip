@@ -81,7 +81,6 @@ describe "Saving Roachlip documents" do
   describe "with default style" do
 
     it "should save attachments for original and styles" do
-      skip
       assert_grid_difference(2) do
         OriginalAsset.create(image: @image)
         rewind_files
@@ -89,7 +88,6 @@ describe "Saving Roachlip documents" do
     end
 
     it "should process styles on all attachments" do
-      skip
       Paperclip::Thumbnail.any_instance.expects(:make).twice
       OriginalAsset.create(image: @image)
       rewind_files

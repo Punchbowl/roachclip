@@ -5,7 +5,8 @@ module Roachclip
 
   def process_roachclip_attachments
     roachclip_attachments.each do |roachclip_attachment|
-      name = roachclip_attachment.name
+      name                = roachclip_attachment.name
+      default_style_name  = roachclip_attachment.default_style_name
 
       return unless assigned_attachments[name]
 
@@ -20,8 +21,13 @@ module Roachclip
         tmp_file_name = thumbnail.make
         stored_file_name = send("#{name}_name").gsub(/\.(\w*)\Z/) { "_#{style.name}.#{$1}" }
 
-        send "#{name}_#{style.name}=", tmp_file_name
-        send "#{name}_#{style.name}_name=", stored_file_name
+        if style.name == default_style_name
+          send "#{name}=", tmp_file_name
+          send "#{name}_name=", stored_file_name
+        else
+          send "#{name}_#{style.name}=", tmp_file_name
+          send "#{name}_#{style.name}_name=", stored_file_name
+        end
       end
     end
   end
