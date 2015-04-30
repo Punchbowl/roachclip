@@ -211,13 +211,18 @@ describe "Inherited Roachclip documents" do
   end
 
   it "adds more attachments to subclass successfully" do
-    skip
     subject = ExtendedAsset.new(image: @image, image_alt: @image_alt)
-    subject.save
     rewind_files
 
     subject.image.must_be_instance_of Joint::AttachmentProxy
     subject.image_alt.must_be_instance_of Joint::AttachmentProxy
+  end
+
+  it "adds saves style attachments from subclasses" do
+    assert_grid_difference(4) do
+      ExtendedAsset.create(image: @image, image_alt: @image_alt)
+      rewind_files
+    end
   end
 
 end
