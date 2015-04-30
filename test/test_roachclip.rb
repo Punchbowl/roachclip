@@ -55,10 +55,29 @@ describe "Roachclip attachment proxies" do
   end
 end
 
+describe "Roachclip document without styles" do
+
+  before do
+    @image     = open_file('cats.jpg')
+    @image_alt = open_file('cats2.jpg')
+  end
+
+  after do
+    all_files.each { |file| file.close }
+  end
+
+  it "has attachment proxy" do
+    subject = BareAsset.create(:image => @image)
+    subject.image.must_be_instance_of Joint::AttachmentProxy
+  end
+
+end
+
 describe "Saving Roachlip documents" do
 
   before do
-    @image = open_file('cats.jpg')
+    @image     = open_file('cats.jpg')
+    @image_alt = open_file('cats2.jpg')
   end
 
   after do
@@ -99,7 +118,8 @@ end
 describe "Destroying attachments in Roachclip documents" do
 
   before do
-    @image = open_file('cats.jpg')
+    @image     = open_file('cats.jpg')
+    @image_alt = open_file('cats2.jpg')
   end
 
   after do
@@ -127,4 +147,47 @@ describe "Destroying attachments in Roachclip documents" do
       end
     end
   end
+
+end
+
+describe "Path helpers in Roachclip documents" do
+
+  before do
+    @image      = open_file('cats.jpg')
+    @image_alt  = open_file('cats2.jpg')
+  end
+
+  after do
+    all_files.each { |file| file.close }
+  end
+
+  it "has attachment and style paths" do
+    pattern = /^\/gridfs\/fs\/[0-9a-fA-F]{24}-\d+$/ 
+    subject = Asset.create(image: @image)
+    rewind_files
+
+    subject.image_path.must_match pattern
+    subject.image_large_path.must_match pattern
+    subject.image_thumb_path.must_match pattern
+  end
+
+  it "respects custom paths" do
+    pattern = /^\/gridfs\/assets\/[0-9a-fA-F]{24}\/foo\/\d+$/ 
+    subject = OriginalAsset.create(image: @image)
+    rewind_files
+
+    subject.image_path.must_match pattern
+    subject.image_thumb_path.must_match pattern
+  end
+
+  it "respects mixed paths" do
+    pattern     = /^\/gridfs\/fs\/[0-9a-fA-F]{24}-\d+$/ 
+    alt_pattern = /^\/file\/path\/[0-9a-fA-F]{24}\/\d+$/
+    subject     = MixedAsset.create(image: @image, image_alt: @image_alt)
+    rewind_files
+
+    subject.image_path.must_match pattern
+    subject.image_alt_path.must_match alt_pattern
+  end
+
 end

@@ -43,6 +43,13 @@ class Asset
   }
 end
 
+class BareAsset
+  include MongoMapper::Document
+  plugin Roachclip
+
+  roachclip :image
+end
+
 class OriginalAsset
   include MongoMapper::Document
   plugin Roachclip
@@ -50,12 +57,20 @@ class OriginalAsset
   roachclip :image, styles: {
     original: { :geometry => '256x256^', :convert_options => '-gravity center -background white -extent 256x256' },
     thumb:    { :geometry => '60x60^', :convert_options => '-gravity center -background white -extent 60x60' }
-  }
+  }, path: '/gridfs/assets/%s/foo/%s'
+end
+
+class MixedAsset
+  include MongoMapper::Document
+  plugin Roachclip
+
+  roachclip :image
+  roachclip :image_alt, path: '/file/path/%s/%s'
 end
 
 module RoachclipTestHelpers
   def all_files
-    [ @image ]
+    [ @image, @image_alt ]
   end
 
   def rewind_files
