@@ -4,6 +4,7 @@ Bundler.setup(:default, 'test', 'development')
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'roachclip'
 
+require 'byebug'
 require 'active_support/testing/assertions'
 require 'mongo_mapper'
 require 'joint'
@@ -41,6 +42,13 @@ class Asset
     large:    { :geometry => '133x133^', :convert_options => '-gravity center -background white -extent 133x133' },
     thumb:    { :geometry => '60x60^', :convert_options => '-gravity center -background white -extent 60x60' }
   }
+end
+
+class InheritedAsset < Asset
+end
+
+class ExtendedAsset < Asset
+  attachment :image_alt
 end
 
 class BareAsset

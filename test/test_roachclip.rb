@@ -191,3 +191,33 @@ describe "Path helpers in Roachclip documents" do
   end
 
 end
+
+describe "Inherited Roachclip documents" do
+
+  before do
+    @image      = open_file('cats.jpg')
+    @image_alt  = open_file('cats2.jpg')
+  end
+
+  after do
+    all_files.each { |file| file.close }
+  end
+
+  it "creates successfully" do
+    subject = InheritedAsset.create(image: @image)
+    rewind_files
+
+    subject.image.must_be_instance_of Joint::AttachmentProxy
+  end
+
+  it "adds more attachments to subclass successfully" do
+    skip
+    subject = ExtendedAsset.new(image: @image, image_alt: @image_alt)
+    subject.save
+    rewind_files
+
+    subject.image.must_be_instance_of Joint::AttachmentProxy
+    subject.image_alt.must_be_instance_of Joint::AttachmentProxy
+  end
+
+end

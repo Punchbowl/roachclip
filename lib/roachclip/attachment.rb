@@ -30,7 +30,7 @@ module Roachclip
     end
 
     def joint_attachment_names
-      [ name ] + styles.select { |style| style.name != default_style_name }.map { |style| "#{name}_#{style.name}" }
+      [ name ] + styles.select { |style| style.name != default_style_name }.map { |style| "#{name}_#{style.name}".to_sym }
     end
   end
 end
