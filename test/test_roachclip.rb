@@ -95,3 +95,36 @@ describe "Saving Roachlip documents" do
   end
 
 end
+
+describe "Destroying attachments in Roachclip documents" do
+
+  before do
+    @image = open_file('cats.jpg')
+  end
+
+  after do
+    all_files.each { |file| file.close }
+  end
+
+  it "destroys thumbs when image set to nil" do
+    subject = Asset.create(image: @image)
+    rewind_files
+
+    assert_grid_difference(-3) do
+      subject.image = nil
+      subject.save
+    end
+  end
+
+  describe "with default style" do
+    it "destroys thumbs when image set to nil" do
+      subject = OriginalAsset.create(image: @image)
+      rewind_files
+
+      assert_grid_difference(-2) do
+        subject.image = nil
+        subject.save
+      end
+    end
+  end
+end
