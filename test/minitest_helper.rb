@@ -76,6 +76,17 @@ class MixedAsset
   roachclip :image_alt, path: '/file/path/%s/%s'
 end
 
+class ValidatedAsset
+  include MongoMapper::Document
+  plugin Roachclip
+
+  roachclip :optional
+  roachclip :image
+  roachclip :image_alt, path: '/file/path/%s/%s', required: true
+
+  validates_roachclip :image
+end
+
 module RoachclipTestHelpers
   def all_files
     [ @image, @image_alt ]

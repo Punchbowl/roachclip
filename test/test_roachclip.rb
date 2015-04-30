@@ -221,3 +221,24 @@ describe "Inherited Roachclip documents" do
   end
 
 end
+
+describe "Roachclip validations" do
+
+  let(:subject) { ValidatedAsset.new }
+
+  it "should require the image (using class method)" do
+    refute subject.valid?
+    assert subject.errors.get(:image)
+  end
+
+  it "should require the image_alt (using option)" do
+    refute subject.valid?
+    assert subject.errors.get(:image_alt)
+  end
+
+  it "should not require the optional" do
+    refute subject.valid?
+    refute subject.errors.get(:optional)
+  end
+
+end

@@ -3,7 +3,8 @@ module Roachclip
     DEFAULTS = {
       styles:         {},
       default_style:  :original,
-      path:           "/gridfs/fs/%s-%s"
+      path:           "/gridfs/fs/%s-%s",
+      required:       false
     }
 
     attr_accessor :name, :options, :styles
@@ -31,6 +32,10 @@ module Roachclip
 
     def joint_attachment_names
       [ name ] + styles.select { |style| style.name != default_style_name }.map { |style| "#{name}_#{style.name}".to_sym }
+    end
+
+    def required?
+      !!options[:required]
     end
   end
 end

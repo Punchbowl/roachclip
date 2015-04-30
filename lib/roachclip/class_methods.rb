@@ -13,8 +13,14 @@ module Roachclip
         end
       end
 
+      validates_presence_of name if roachclip_attachment.required?
+
       before_save :process_roachclip_attachments
       before_save :destroy_nil_roachclip_attachments
+    end
+
+    def validates_roachclip(*args)
+      validates_presence_of args
     end
 
   end
