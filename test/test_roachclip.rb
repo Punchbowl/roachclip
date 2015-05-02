@@ -247,3 +247,30 @@ describe "Roachclip validations" do
   end
 
 end
+
+describe "Roachclip serialization" do
+
+  before do
+    @image      = open_file('cats.jpg')
+    @image_alt  = open_file('cats2.jpg')
+  end
+
+  after do
+    all_files.each { |file| file.close }
+  end
+
+  subject do
+    doc = Asset.create(image: @image)
+    rewind_files
+    doc
+  end
+
+  it "include roachclip attachment keys" do
+    key_names.each do |key|
+      subject.as_json.keys.must_include "image_#{key}"
+      subject.as_json.keys.must_include "image_large_#{key}"
+      subject.as_json.keys.must_include "image_thumb_#{key}"
+    end
+  end
+
+end
