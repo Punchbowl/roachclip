@@ -43,7 +43,7 @@ module Roachclip
   private
 
   def with_temp_file(name, &block)
-    file = Tempfile.new ['roachclip', name.to_s].join('-')
+    file = Tempfile.new(['roachclip', name.to_s].join('-')).tap { |f| f.binmode }
     begin
       file.write assigned_attachments[name].read
       file.close
