@@ -8,7 +8,8 @@ module Roachclip
       roachclip_attachment.joint_attachment_names.each do |attachment_name|
         self.attachment attachment_name
         self.send(:define_method, "#{attachment_name}_path") do
-          ts = (self.attributes['updated_at'] || Time.now).to_i
+          top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
+          ts = (top_doc.attributes['updated_at'] || Time.now).to_i
           (roachclip_attachment.path % [self.send(attachment_name).id.to_s, ts]).chomp('-')
         end
       end
