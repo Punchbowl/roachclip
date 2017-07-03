@@ -4,6 +4,7 @@ Bundler.setup(:default, 'test', 'development')
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'roachclip'
 
+require 'logger'
 require 'byebug'
 require 'active_support/testing/assertions'
 require 'mongo_mapper'
@@ -14,7 +15,13 @@ require 'minitest/autorun'
 require 'minitest/pride'
 require 'mocha/mini_test'
 
+log_dir = File.expand_path('../../log', __FILE__)
+FileUtils.mkdir_p(log_dir)
+logger = Logger.new(File.join(log_dir, 'test.log'))
+
+MongoMapper.connection = Mongo::Client.new(['127.0.0.1:27017'], :database => 'joint_test', :logger => logger)
 MongoMapper.database = "roachclip_test"
+MongoMapper.database.collections.each { |c| c.indexes.drop_all }
 
 Paperclip.options[:log] = false
 
@@ -22,7 +29,7 @@ class Minitest::Test
   include ActiveSupport::Testing::Assertions
 
   def setup
-    MongoMapper.database.collections.each { |coll| coll.remove unless coll.name =~ /^system/ }
+    MongoMapper.database.collections.each { |coll| coll.drop unless coll.name =~ /^system/ }
   end
   
   def assert_grid_difference(difference=1, collection_name='fs', &block)
@@ -102,9 +109,9 @@ module RoachclipTestHelpers
     f
   end
 
-  def grid(collection_name = 'fs')
-    @grids ||= {}
-    @grids[collection_name] ||= Mongo::Grid.new(MongoMapper.database, collection_name)
+  def fs_bucket(collection_name = 'fs')
+    @fs_buckets ||= {}
+    @fs_buckets[collection_name] ||= MongoMapper.database.fs(bucket_name: collection_name)
   end
 
   def key_names
