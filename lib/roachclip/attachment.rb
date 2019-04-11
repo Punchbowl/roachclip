@@ -10,8 +10,9 @@ module Roachclip
     attr_accessor :name, :options, :styles
 
     def initialize(name, options = {})
-      self.name    = name.to_sym
       self.options = options.symbolize_keys.reverse_merge(DEFAULTS)
+      self.name = name.to_sym
+      self.accessor_name = self.options[:accessor_name] || name.to_sym
 
       self.styles  = self.options[:styles].map do |key, opts|
         Style.new(key, opts)
@@ -31,7 +32,7 @@ module Roachclip
     end
 
     def joint_attachment_names
-      [ name ] + styles.select { |style| style.name != default_style_name }.map { |style| "#{name}_#{style.name}".to_sym }
+      [[name, accessor_name ]] + styles.select { |style| style.name != default_style_name }.map { |style| ["#{name}_#{style.name}".to_sym, "#{accessor_name}_#{style.name}".to_sym] }
     end
 
     def required?
