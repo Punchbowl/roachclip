@@ -7,7 +7,7 @@ module Roachclip
       required:       false
     }
 
-    attr_accessor :name, :options, :styles
+    attr_accessor :name, :accessor_name, :options, :styles
 
     def initialize(name, options = {})
       self.options = options.symbolize_keys.reverse_merge(DEFAULTS)
