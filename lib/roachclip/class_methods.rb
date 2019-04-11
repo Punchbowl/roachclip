@@ -6,7 +6,12 @@ module Roachclip
       self.roachclip_attachments  = roachclip_attachments.dup.add(roachclip_attachment)
 
       roachclip_attachment.joint_attachment_names.each do |attachment_name|
-        self.attachment attachment_name
+        if options[:readonly]
+          self.attachment attachment_name, readonly: true
+        else
+          self.attachment attachment_name
+        end
+
         self.send(:define_method, "#{attachment_name}_path") do
           top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
           ts = (top_doc.attributes['updated_at'] || Time.now).to_i
@@ -14,10 +19,12 @@ module Roachclip
         end
       end
 
-      validates_presence_of name if roachclip_attachment.required?
+      unless options[:readonly]
+        validates_presence_of name if roachclip_attachment.required?
 
-      before_save :process_roachclip_attachments
-      before_save :destroy_nil_roachclip_attachments
+        before_save :process_roachclip_attachments
+        before_save :destroy_nil_roachclip_attachments
+      end
     end
 
     def validates_roachclip(*args)
