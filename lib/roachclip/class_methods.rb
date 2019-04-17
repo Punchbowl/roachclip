@@ -13,9 +13,11 @@ module Roachclip
         end
 
         self.send(:define_method, "#{attachment_accessor_name}_path") do
+          id = self.send(attachment_accessor_name).id
           top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
           ts = (Time.parse(top_doc.attributes['updated_at'].to_s) rescue Time.now).to_i
-          (roachclip_attachment.path % [self.send(attachment_accessor_name).id.to_s, ts]).chomp('-')
+          collection = self.joint_collection_name || 'fs'
+          id ? (roachclip_attachment.path % [collection, id.to_s, ts]).chomp('-') : nil
         end
       end
 

@@ -3,7 +3,7 @@ module Roachclip
     DEFAULTS = {
       styles:         {},
       default_style:  :original,
-      path:           "/gridfs/fs/%s-%s",
+      path:           "/gridfs/%s/%s-%s",
       required:       false
     }
 
@@ -28,7 +28,8 @@ module Roachclip
     end
 
     def path
-      options[:path]
+      # options[:path]
+      DEFAULTS[:path]
     end
 
     def joint_attachment_names
