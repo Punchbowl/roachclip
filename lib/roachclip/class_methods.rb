@@ -17,7 +17,13 @@ module Roachclip
           top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
           ts = (Time.parse(top_doc.attributes['updated_at'].to_s) rescue Time.now).to_i
           collection = self.joint_collection_name || 'fs'
-          id ? (roachclip_attachment.path % [collection, id.to_s, ts]).chomp('-') : nil
+          extension = self.send(attachment_accessor_name).extension
+          if id
+            basename = (roachclip_attachment.path % [collection, id.to_s, ts]).chomp('-')
+            [basename, extension].compact.join('.')
+          else
+            nil
+          end
         end
       end
 
