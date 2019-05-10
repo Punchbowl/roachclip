@@ -4,7 +4,8 @@ module Roachclip
       styles:         {},
       default_style:  :original,
       path:           "/gridfs/%s/%s-%s",
-      required:       false
+      required:       false,
+      cachebuster:    :timestamp
     }
 
     attr_accessor :name, :accessor_name, :options, :styles
@@ -30,6 +31,10 @@ module Roachclip
     def path
       # options[:path]
       DEFAULTS[:path]
+    end
+
+    def cachebuster
+      options[:cachebuster]
     end
 
     def joint_attachment_names

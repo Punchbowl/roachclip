@@ -14,12 +14,16 @@ module Roachclip
 
         self.send(:define_method, "#{attachment_accessor_name}_path") do
           id = self.send(attachment_accessor_name).id
-          top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
-          ts = (Time.parse(top_doc.attributes['updated_at'].to_s) rescue Time.now).to_i
+          cb = if roachclip_attachment.cachebuster == :crc32
+                 self.send(attachment_accessor_name).crc32
+               else
+                top_doc = self.respond_to?(:_parent_document) ? self._parent_document : self
+                (Time.parse(top_doc.attributes['updated_at'].to_s) rescue Time.now).to_i
+               end
           collection = self.joint_collection_name || 'fs'
           extension = self.send(attachment_accessor_name).extension
           if id
-            basename = (roachclip_attachment.path % [collection, id.to_s, ts]).chomp('-')
+            basename = (roachclip_attachment.path % [collection, id.to_s, cb]).chomp('-')
             [basename, extension].compact.join('.')
           else
             nil
